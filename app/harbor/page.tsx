@@ -18,6 +18,7 @@ import type { TimeOfDay } from '@/lib/types/mood-record';
 import type { HarborPost } from '@/lib/types/harbor';
 import { createClient } from '@/lib/supabase/client';
 import { HarborService } from '@/lib/services/harbor';
+import { filterValidHarborPosts, isShareExpired } from '@/lib/utils/share-expiry';
 import PostCard from './components/PostCard';
 import FilterModal from './components/FilterModal';
 
@@ -51,7 +52,8 @@ export default function HarborPage() {
     });
 
     if (result.success) {
-      setPosts(result.value);
+      // 期限切れの投稿をフィルタリング
+      setPosts(filterValidHarborPosts(result.value));
     } else {
       setError('投稿の読み込みに失敗しました');
     }
@@ -70,15 +72,26 @@ export default function HarborPage() {
     const harborService = new HarborService(supabase);
 
     const unsubscribe = harborService.subscribeToFeed(activeTab, (newPost) => {
-      // 新規投稿を一番上に追加
-      setPosts((prevPosts) => [newPost, ...prevPosts]);
-      setNewPostsCount((prev) => prev + 1);
+      // 期限切れでない場合のみ追加
+      if (!isShareExpired(newPost.share.expires_at)) {
+        setPosts((prevPosts) => [newPost, ...prevPosts]);
+        setNewPostsCount((prev) => prev + 1);
+      }
     });
 
     return () => {
       unsubscribe();
     };
   }, [activeTab]);
+
+  // 定期的に期限切れ投稿を非表示にする（1分ごと）
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPosts((prevPosts) => filterValidHarborPosts(prevPosts));
+    }, 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // プルダウン更新
   const handleRefresh = useCallback(async () => {

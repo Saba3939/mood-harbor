@@ -5,7 +5,9 @@
 
 'use client';
 
+import { useState, useEffect } from 'react';
 import type { HarborPost } from '@/lib/types/harbor';
+import { getShareRemainingTimeText } from '@/lib/utils/share-expiry';
 
 interface PostCardProps {
   post: HarborPost;
@@ -29,6 +31,23 @@ function getRelativeTime(createdAt: string): string {
 }
 
 export default function PostCard({ post, onReactionClick }: PostCardProps) {
+  // 残り時間を定期更新
+  const [remainingTime, setRemainingTime] = useState(() =>
+    getShareRemainingTimeText(post.share.expires_at)
+  );
+
+  useEffect(() => {
+    // 初期値を設定
+    setRemainingTime(getShareRemainingTimeText(post.share.expires_at));
+
+    // 1分ごとに更新
+    const interval = setInterval(() => {
+      setRemainingTime(getShareRemainingTimeText(post.share.expires_at));
+    }, 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [post.share.expires_at]);
+
   return (
     <article
       role="article"
@@ -42,9 +61,11 @@ export default function PostCard({ post, onReactionClick }: PostCardProps) {
         </div>
         <div className="flex-1">
           <p className="font-medium text-gray-900">{post.user.nickname}</p>
-          <p className="text-sm text-gray-500">
-            {getRelativeTime(post.share.created_at)}
-          </p>
+          <div className="flex items-center space-x-2 text-sm text-gray-500">
+            <span>{getRelativeTime(post.share.created_at)}</span>
+            <span>•</span>
+            <span className="text-orange-500">{remainingTime}</span>
+          </div>
         </div>
       </div>
 
