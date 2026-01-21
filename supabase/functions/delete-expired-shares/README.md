@@ -103,14 +103,16 @@ SELECT * FROM cron.job;
 
 Next.jsアプリをVercelにデプロイしている場合、Vercel Cronが最も管理しやすい方法です。
 
+**注意**: Vercel無料プラン（Hobby）では1つのcronジョブのみ許可されるため、すべてのcronタスクを統合エンドポイント(`/api/cron`)にまとめています。
+
 **手順**:
 
-1. `vercel.json`を作成（すでに作成済み）:
+1. `vercel.json`（すでに作成済み）:
 ```json
 {
   "crons": [
     {
-      "path": "/api/cron/delete-expired-shares",
+      "path": "/api/cron",
       "schedule": "0 * * * *"
     }
   ]
@@ -130,23 +132,23 @@ vercel --prod
    - プロジェクト → Settings → Crons
    - スケジュールされたジョブが表示される
 
-**API Route**: `app/api/cron/delete-expired-shares/route.ts`（すでに実装済み）
+**統合API Route**: `app/api/cron/route.ts`（すべてのcronタスクを1つにまとめて実行）
 
 #### 方法3: GitHub Actions（代替案）
 
-**GitHub Actions (.github/workflows/delete-expired-shares.yml)**
+**GitHub Actions (.github/workflows/cron.yml)**
 ```yaml
-name: Delete Expired Shares
+name: Cron Tasks
 on:
   schedule:
     - cron: '0 * * * *'  # 毎時0分に実行
 jobs:
-  delete:
+  run-cron:
     runs-on: ubuntu-latest
     steps:
-      - name: Call API Route
+      - name: Call Cron API
         run: |
-          curl -X GET https://your-app.vercel.app/api/cron/delete-expired-shares \
+          curl -X GET https://your-app.vercel.app/api/cron \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
 ```
 
@@ -196,7 +198,9 @@ npm test delete-expired-shares.test.ts
 
 ## 関連ファイル
 
-- `supabase/functions/delete-expired-shares/index.ts`: 関数本体
-- `supabase/config.toml`: cron設定
+- `supabase/functions/delete-expired-shares/index.ts`: Supabase Function本体
+- `app/api/cron/route.ts`: 統合cronエンドポイント（Vercel用）
+- `vercel.json`: Vercel Cron設定
+- `supabase/config.toml`: Supabase設定
 - `__tests__/supabase/functions/delete-expired-shares.test.ts`: 統合テスト
 - `.kiro/specs/mood-harbor-app/tasks.md`: タスク6.6の仕様

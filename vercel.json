@@ -1,7 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api/cron/delete-expired-shares",
+      "path": "/api/cron",
       "schedule": "0 * * * *"
     }
   ]
