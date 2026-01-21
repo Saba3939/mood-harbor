@@ -149,7 +149,7 @@ export default function RecordEditModal({
       const updates: UpdateRecordParams = {
         mood_level: moodLevel,
         reasons: selectedReasons,
-        memo: memo || null,
+        memo: memo || undefined,
         time_of_day: timeOfDay,
         weather: weather,
       };
