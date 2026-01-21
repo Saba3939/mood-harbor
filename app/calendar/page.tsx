@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   getMonthDays,
@@ -194,11 +194,11 @@ export default function CalendarPage() {
   };
 
   // カレンダーグリッドの先頭に空白セルを追加
-  const getLeadingEmptyCells = (): JSX.Element[] => {
+  const getLeadingEmptyCells = (): React.ReactElement[] => {
     if (calendarDays.length === 0) return [];
 
     const firstDayOfWeek = calendarDays[0].dayOfWeek;
-    const emptyCells: JSX.Element[] = [];
+    const emptyCells: React.ReactElement[] = [];
 
     for (let i = 0; i < firstDayOfWeek; i++) {
       emptyCells.push(<div key={`empty-${i}`} className="h-16" />);

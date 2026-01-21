@@ -150,8 +150,8 @@ export default function RecordEditModal({
         mood_level: moodLevel,
         reasons: selectedReasons,
         memo: memo || undefined,
-        time_of_day: timeOfDay,
-        weather: weather,
+        time_of_day: timeOfDay ?? undefined,
+        weather: weather ?? undefined,
       };
 
       await onSave(record.id, updates);
