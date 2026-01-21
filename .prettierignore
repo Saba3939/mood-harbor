@@ -1,0 +1,21 @@
+# 依存関係
+node_modules
+.pnp
+.pnp.js
+
+# ビルド出力
+.next
+out
+build
+dist
+
+# キャッシュ
+.cache
+.turbo
+
+# その他
+.git
+.gitignore
+package-lock.json
+pnpm-lock.yaml
+yarn.lock

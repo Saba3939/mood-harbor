@@ -1,0 +1,24 @@
+{
+  "name": "Mood Harbor",
+  "short_name": "Mood Harbor",
+  "description": "文字入力なしでタップのみで感情を記録し、温かいコミュニティでユーザー同士が励まし合える学生向け感情記録アプリ",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

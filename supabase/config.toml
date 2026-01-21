@@ -1,0 +1,59 @@
+# Supabase Configuration for Mood Harbor
+
+# プロジェクトID（ローカル開発用のデフォルト値）
+project_id = "mood-harbor-local"
+
+[api]
+# APIポート設定
+port = 54321
+# スキーマ（公開するスキーマ）
+schemas = ["public", "storage"]
+# 追加検索パス
+extra_search_path = ["public"]
+# 最大行数
+max_rows = 1000
+
+[db]
+# PostgreSQLバージョン
+major_version = 15
+# データベースポート
+port = 54322
+
+[studio]
+# Supabase Studioポート
+port = 54323
+
+[auth]
+# 認証設定
+enabled = true
+# サイトURL（ローカル開発環境）
+site_url = "http://localhost:3000"
+# 追加のリダイレクトURL
+additional_redirect_urls = ["http://localhost:3000/auth/callback"]
+# JWT有効期限（秒）
+jwt_expiry = 3600
+
+[auth.email]
+# メール認証を有効化
+enable_signup = true
+# ダブルオプトイン確認
+double_confirm_changes = true
+# 確認メール有効化
+enable_confirmations = false  # ローカル開発では無効化
+
+[auth.external.google]
+# Google OAuth設定（本番環境でclient_idとclient_secretを設定）
+enabled = false
+# client_id = "your-google-client-id"
+# client_secret = "your-google-client-secret"
+# redirect_uri = "http://localhost:54321/auth/v1/callback"
+
+[storage]
+# ストレージ設定
+enabled = true
+# ファイルサイズ制限（バイト）
+file_size_limit = "50MB"
+
+[functions.delete-expired-shares]
+# 期限切れシェアを削除する関数
+verify_jwt = false  # cronジョブからの呼び出しのため認証不要
